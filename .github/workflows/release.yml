@@ -15,15 +15,15 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 20
 
       - name: Install dependencies
         run: npm install
 
       - name: Build and Package extension
         run: |
-          npm run compile
-          npx vsce package --allow-missing-repository
+          npx webpack --mode production
+          npx @vscode/vsce package --allow-missing-repository
 
       - name: Upload VSIX to Release
         uses: softprops/action-gh-release@v1
