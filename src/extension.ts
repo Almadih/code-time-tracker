@@ -1,0 +1,65 @@
+import * as vscode from 'vscode';
+import { StorageManager } from './storage';
+import { ActivityTracker } from './tracker';
+import { DashboardProvider } from './dashboard';
+
+let statusBarItem: vscode.StatusBarItem;
+
+export function activate(context: vscode.ExtensionContext) {
+    console.log('Code Time Tracker is now active');
+
+    const storage = new StorageManager(context);
+    const tracker = new ActivityTracker(storage);
+    const dashboard = new DashboardProvider(context, storage);
+
+    tracker.activate();
+    tracker.on('heartbeat', () => updateStatusBar(storage));
+
+    // Status Bar Item
+    statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
+    statusBarItem.command = 'code-time-tracker.openDashboard';
+    context.subscriptions.push(statusBarItem);
+
+    // Update status bar every minute as fallback
+    updateStatusBar(storage);
+    setInterval(() => updateStatusBar(storage), 60000);
+
+    // Commands
+    context.subscriptions.push(
+        vscode.commands.registerCommand('code-time-tracker.openDashboard', () => {
+            dashboard.show();
+        })
+    );
+
+    // Cleanup
+    context.subscriptions.push({
+        dispose: () => tracker.deactivate()
+    });
+}
+
+function updateStatusBar(storage: StorageManager) {
+    const stats = storage.getTodayStats();
+    if (stats) {
+        const hours = Math.floor(stats.activeSeconds / 3600);
+        const mins = Math.floor((stats.activeSeconds % 3600) / 60);
+        
+        // Find current project
+        const workspaceFolders = vscode.workspace.workspaceFolders;
+        const currentProject = workspaceFolders ? workspaceFolders[0].name : '';
+        const projectTimeSec = stats.projects[currentProject] || 0;
+        const pMins = Math.floor(projectTimeSec / 60);
+
+        statusBarItem.text = `$(watch) ${hours}h ${mins}m (${pMins}m in ${currentProject})`;
+        statusBarItem.tooltip = `Total: ${hours}h ${mins}m | Project: ${pMins}m - Click to view dashboard`;
+        statusBarItem.show();
+    } else {
+        statusBarItem.text = `$(watch) 0h 0m`;
+        statusBarItem.show();
+    }
+}
+
+export function deactivate() {
+    if (statusBarItem) {
+        statusBarItem.dispose();
+    }
+}

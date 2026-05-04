@@ -1,0 +1,88 @@
+{
+    "name": "code-time-tracker",
+    "displayName": "Code Time Tracker",
+    "description": "Track your coding time and view analytics locally.",
+    "version": "0.0.1",
+    "publisher": "almadih",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/almadih/code-time-tracker"
+    },
+    "engines": {
+        "vscode": "^1.74.0"
+    },
+    "categories": [
+        "Other"
+    ],
+    "activationEvents": [
+        "onStartupFinished"
+    ],
+    "main": "./dist/extension.js",
+    "contributes": {
+        "commands": [
+            {
+                "command": "code-time-tracker.openDashboard",
+                "title": "Code Time: Open Dashboard"
+            }
+        ],
+        "configuration": {
+            "title": "Code Time Tracker",
+            "properties": {
+                "codeTimeTracker.inactivityTimeout": {
+                    "type": "number",
+                    "default": 120,
+                    "description": "Number of seconds of inactivity before stopping active time tracking."
+                }
+            }
+        },
+        "viewsContainers": {
+            "activitybar": [
+                {
+                    "id": "code-time-tracker-explorer",
+                    "title": "Code Time",
+                    "icon": "media/icon.svg"
+                }
+            ]
+        },
+        "views": {
+            "code-time-tracker-explorer": [
+                {
+                    "id": "code-time-tracker-stats",
+                    "name": "Statistics"
+                }
+            ]
+        }
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run package",
+        "compile": "webpack",
+        "watch": "webpack --watch",
+        "package": "webpack --mode production --devtool hidden-source-map",
+        "compile-tests": "tsc -p . --outDir out",
+        "watch-tests": "tsc -p . -w --outDir out",
+        "pretest": "npm run compile-tests && npm run lint",
+        "lint": "eslint src --ext ts",
+        "test": "node ./out/test/runTest.js"
+    },
+    "devDependencies": {
+        "@types/glob": "^8.0.0",
+        "@types/mocha": "^10.0.1",
+        "@types/node": "16.x",
+        "@types/vscode": "^1.74.0",
+        "@typescript-eslint/eslint-plugin": "^5.45.0",
+        "@typescript-eslint/parser": "^5.45.0",
+        "@vscode/test-electron": "^2.2.0",
+        "eslint": "^8.28.0",
+        "glob": "^8.0.3",
+        "mocha": "^10.1.0",
+        "ts-loader": "^9.4.1",
+        "typescript": "^4.9.3",
+        "webpack": "^5.75.0",
+        "webpack-cli": "^5.0.0"
+    },
+    "dependencies": {
+        "chart.js": "^4.5.1",
+        "dayjs": "^1.11.7"
+    },
+    "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
+}
