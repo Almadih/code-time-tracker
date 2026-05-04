@@ -2,7 +2,7 @@
     "name": "code-time-tracker",
     "displayName": "Code Time Tracker",
     "description": "Track your coding time and view analytics locally.",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "publisher": "almadih",
     "repository": {
         "type": "git",
