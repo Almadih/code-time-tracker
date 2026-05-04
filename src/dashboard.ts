@@ -105,13 +105,17 @@ export class DashboardProvider {
         </div>
 
         <div class="grid">
-            <div class="card chart-container">
-                <h2>Time per Day (Last 7 Days)</h2>
-                <canvas id="weeklyChart"></canvas>
+            <div class="card">
+                <h2>Time per Day</h2>
+                <div class="chart-wrapper">
+                    <canvas id="weeklyChart"></canvas>
+                </div>
             </div>
-            <div class="card chart-container">
+            <div class="card">
                 <h2>Project Breakdown</h2>
-                <canvas id="projectChart"></canvas>
+                <div class="chart-wrapper">
+                    <canvas id="projectChart"></canvas>
+                </div>
             </div>
         </div>
 

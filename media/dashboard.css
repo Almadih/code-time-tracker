@@ -76,8 +76,10 @@ header h1 {
     padding-bottom: 10px;
 }
 
-.chart-container {
-    min-height: 300px;
+.chart-wrapper {
+    position: relative;
+    height: 350px;
+    width: 100%;
 }
 
 .stats-table table {
