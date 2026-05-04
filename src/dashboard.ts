@@ -29,7 +29,8 @@ export class DashboardProvider {
             {
                 enableScripts: true,
                 localResourceRoots: [
-                    vscode.Uri.file(path.join(this.context.extensionPath, 'media'))
+                    vscode.Uri.file(path.join(this.context.extensionPath, 'media')),
+                    vscode.Uri.file(path.join(this.context.extensionPath, 'node_modules'))
                 ]
             }
         );
@@ -76,6 +77,7 @@ export class DashboardProvider {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${webview.cspSource} 'unsafe-inline'; script-src ${webview.cspSource} 'unsafe-inline'; img-src ${webview.cspSource} https:;">
     <link href="${styleUri}" rel="stylesheet">
     <script src="${chartJsUri}"></script>
     <title>Code Time Dashboard</title>
@@ -97,6 +99,10 @@ export class DashboardProvider {
                 </div>
             </div>
         </header>
+
+        <div id="noDataMessage" class="card hidden">
+            <p>No activity recorded for the selected period.</p>
+        </div>
 
         <div class="grid">
             <div class="card chart-container">
