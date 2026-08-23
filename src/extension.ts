@@ -28,6 +28,17 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(
         vscode.commands.registerCommand('code-time-tracker.openDashboard', () => {
             dashboard.show();
+        }),
+        vscode.commands.registerCommand('code-time-tracker.recalculateStats', () => {
+            const result = storage.repairAndRecalculate();
+            updateStatusBar(storage);
+            if (result.success) {
+                vscode.window.showInformationMessage(
+                    `Code Time Tracker: Successfully recalculated statistics (${result.repairedCount} entries repaired).`
+                );
+            } else {
+                vscode.window.showErrorMessage('Code Time Tracker: Failed to recalculate statistics.');
+            }
         })
     );
 
