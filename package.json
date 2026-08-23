@@ -51,8 +51,9 @@
         "views": {
             "code-time-tracker-explorer": [
                 {
+                    "type": "webview",
                     "id": "code-time-tracker-stats",
-                    "name": "Statistics"
+                    "name": "Summary & Activity"
                 }
             ]
         }

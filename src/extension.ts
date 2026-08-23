@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import { StorageManager } from './storage';
 import { ActivityTracker } from './tracker';
 import { DashboardProvider } from './dashboard';
+import { SidebarViewProvider } from './sidebar';
 
 let statusBarItem: vscode.StatusBarItem;
 
@@ -11,18 +12,30 @@ export function activate(context: vscode.ExtensionContext) {
     const storage = new StorageManager(context);
     const tracker = new ActivityTracker(storage);
     const dashboard = new DashboardProvider(context, storage);
+    const sidebar = new SidebarViewProvider(context, storage);
+
+    // Register Sidebar Webview View
+    context.subscriptions.push(
+        vscode.window.registerWebviewViewProvider('code-time-tracker-stats', sidebar)
+    );
 
     tracker.activate();
-    tracker.on('heartbeat', () => updateStatusBar(storage));
+    tracker.on('heartbeat', () => {
+        updateStatusBar(storage);
+        sidebar.refresh();
+    });
 
     // Status Bar Item
     statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
     statusBarItem.command = 'code-time-tracker.openDashboard';
     context.subscriptions.push(statusBarItem);
 
-    // Update status bar every minute as fallback
+    // Update status bar and sidebar every minute as fallback
     updateStatusBar(storage);
-    setInterval(() => updateStatusBar(storage), 60000);
+    setInterval(() => {
+        updateStatusBar(storage);
+        sidebar.refresh();
+    }, 60000);
 
     // Commands
     context.subscriptions.push(
@@ -32,6 +45,7 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.commands.registerCommand('code-time-tracker.recalculateStats', () => {
             const result = storage.repairAndRecalculate();
             updateStatusBar(storage);
+            sidebar.refresh();
             if (result.success) {
                 vscode.window.showInformationMessage(
                     `Code Time Tracker: Successfully recalculated statistics (${result.repairedCount} entries repaired).`
