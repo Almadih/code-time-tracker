@@ -51,6 +51,7 @@
         "views": {
             "code-time-tracker-explorer": [
                 {
+                    "icon": "media/icon.svg",
                     "type": "webview",
                     "id": "code-time-tracker-stats",
                     "name": "Summary & Activity"
