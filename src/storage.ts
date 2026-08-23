@@ -200,6 +200,18 @@ export class StorageManager {
         }
     }
 
+    public getFullData(): { stats: { [date: string]: DailyStats }; heartbeats: Heartbeat[] } {
+        try {
+            const data = JSON.parse(fs.readFileSync(this.dataFile, 'utf8'));
+            return {
+                stats: data.stats || {},
+                heartbeats: data.heartbeats || []
+            };
+        } catch (error) {
+            return { stats: {}, heartbeats: [] };
+        }
+    }
+
     public getStats(): { [date: string]: DailyStats } {
         try {
             const data = JSON.parse(fs.readFileSync(this.dataFile, 'utf8'));
